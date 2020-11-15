@@ -35,6 +35,6 @@ class Tile
 
     public function __toString(): string
     {
-        return $this->leftSide . ':' . $this->rightSide;
+        return '<' . $this->leftSide . ':' . $this->rightSide . '>';
     }
 }
