@@ -54,4 +54,10 @@ class DominoesTest extends TestCase
 
         $this->assertEquals($expectedTiles, $actualTiles);
     }
+
+    public function testIsThereAWinnerNoWinner()
+    {
+        $dominoes = new Dominoes();
+        $this->assertFalse($dominoes->isThereAWinner());
+    }
 }

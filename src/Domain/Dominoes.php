@@ -9,6 +9,8 @@ class Dominoes
     public const SET_SIZE = 6;
 
     /**
+     * Tiles set is specific to the game.
+     *
      * @return Tile[]
      */
     public function generateTiles(): array
@@ -21,5 +23,13 @@ class Dominoes
         }
 
         return $tiles;
+    }
+
+    /**
+     * The game ends when one player wins by playing their last tile.
+     */
+    public function isThereAWinner(): bool
+    {
+        return false;
     }
 }
