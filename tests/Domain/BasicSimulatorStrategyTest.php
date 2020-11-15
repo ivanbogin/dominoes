@@ -13,20 +13,37 @@ use PHPUnit\Framework\TestCase;
 
 class BasicSimulatorStrategyTest extends TestCase
 {
-    public function testPlayerTurnAvailableMove(): void
+    public function testPlayerTurnRightSide(): void
     {
         $player1  = new Player('Alice');
         $player2  = new Player('Bob');
         $dominoes = new Dominoes([$player1, $player2]);
 
-        $dominoes->getBoardPile()->addTile(new Tile(0, 1));
+        $dominoes->getBoardPile()->addTile(new Tile(2, 1));
 
-        $player1->getHandPile()->addTile(new Tile(1, 2));
+        $player1->getHandPile()->addTile(new Tile(1, 0));
 
         $strategy = new BasicSimulatorStrategy(new Logger());
         $strategy->playerTurn($player1, $dominoes);
 
-        $this->assertEquals([[0, 1], [1, 2]], $dominoes->getBoardPile()->toArray());
+        $this->assertEquals([[2, 1], [1, 0]], $dominoes->getBoardPile()->toArray());
+        $this->assertEmpty($player1->getHandPile()->getTiles());
+    }
+
+    public function testPlayerTurnLeftSide(): void
+    {
+        $player1  = new Player('Alice');
+        $player2  = new Player('Bob');
+        $dominoes = new Dominoes([$player1, $player2]);
+
+        $dominoes->getBoardPile()->addTile(new Tile(4, 2));
+
+        $player1->getHandPile()->addTile(new Tile(6, 4));
+
+        $strategy = new BasicSimulatorStrategy(new Logger());
+        $strategy->playerTurn($player1, $dominoes);
+
+        $this->assertEquals([[6, 4], [4, 2]], $dominoes->getBoardPile()->toArray());
         $this->assertEmpty($player1->getHandPile()->getTiles());
     }
 }
