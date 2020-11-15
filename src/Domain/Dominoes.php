@@ -8,6 +8,17 @@ class Dominoes
 {
     public const SET_SIZE = 6;
 
+    /** @var Player[] */
+    protected array $players;
+
+    /**
+     * @param array<Player> $players
+     */
+    public function __construct(array $players)
+    {
+        $this->players = $players;
+    }
+
     /**
      * Tiles set is specific to the game.
      *
@@ -30,6 +41,12 @@ class Dominoes
      */
     public function isThereAWinner(): bool
     {
+        foreach ($this->players as $player) {
+            if ($player->getHandPile()->count() === 0) {
+                return true;
+            }
+        }
+
         return false;
     }
 }
