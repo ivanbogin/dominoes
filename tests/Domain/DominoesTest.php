@@ -14,26 +14,6 @@ use function array_merge;
 
 class DominoesTest extends TestCase
 {
-    public function testIsThereAWinnerFalse(): void
-    {
-        $player1 = new Player('Alice');
-        $player2 = new Player('Bob');
-
-        $player1->getHandPile()->addTile(new Tile(0, 0));
-        $player2->getHandPile()->addTile(new Tile(1, 1));
-
-        $dominoes = new Dominoes([$player1, $player2]);
-        $this->assertFalse($dominoes->isThereAWinner());
-    }
-
-    public function testIsThereAWinnerTrue(): void
-    {
-        $player1  = new Player('Alice');
-        $player2  = new Player('Bob');
-        $dominoes = new Dominoes([$player1, $player2]);
-        $this->assertTrue($dominoes->isThereAWinner());
-    }
-
     public function testGenerateTiles(): void
     {
         $player1  = new Player('Alice');
@@ -101,5 +81,34 @@ class DominoesTest extends TestCase
             $dominoes->getBoardPile()->toStringArray(),
         );
         $this->assertCount(28, $tiles);
+
+        // No winner yet
+        $this->assertFalse($dominoes->isThereAWinner());
+    }
+
+    public function testIsThereAWinnerAllPlayersHaveTiles(): void
+    {
+        $player1 = new Player('Alice');
+        $player2 = new Player('Bob');
+
+        $player1->getHandPile()->addTile(new Tile(0, 0));
+        $player2->getHandPile()->addTile(new Tile(1, 1));
+
+        $dominoes = new Dominoes([$player1, $player2]);
+
+        $this->assertFalse($dominoes->isThereAWinner());
+    }
+
+    public function testIsThereAWinnerOnePlayerHandEmpty(): void
+    {
+        $player1 = new Player('Alice');
+        $player2 = new Player('Bob');
+
+        $player1->getHandPile()->addTile(new Tile(0, 0));
+        $player2->getHandPile()->clear();
+
+        $dominoes = new Dominoes([$player1, $player2]);
+
+        $this->assertTrue($dominoes->isThereAWinner());
     }
 }
