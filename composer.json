@@ -28,6 +28,7 @@
         }
     },
     "scripts": {
+        "play": "php app.php",
         "test": "vendor/bin/phpunit tests",
         "coverage": "vendor/bin/phpunit tests --coverage-html=build/test_coverage",
         "cs": "vendor/bin/phpcs --standard=Doctrine src tests",
