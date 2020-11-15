@@ -6,9 +6,9 @@ namespace Tests\Dominoes\Domain;
 
 use Dominoes\Domain\BasicSimulatorStrategy;
 use Dominoes\Domain\Dominoes;
-use Dominoes\Domain\Logger;
 use Dominoes\Domain\Player;
 use Dominoes\Domain\Tile;
+use Dominoes\Infrastructure\ArrayLog;
 use PHPUnit\Framework\TestCase;
 
 class BasicSimulatorStrategyTest extends TestCase
@@ -23,7 +23,7 @@ class BasicSimulatorStrategyTest extends TestCase
 
         $player1->getHandPile()->addTile(new Tile(1, 0));
 
-        $strategy = new BasicSimulatorStrategy(new Logger());
+        $strategy = new BasicSimulatorStrategy(new ArrayLog());
         $strategy->playerTurn($player1, $dominoes);
 
         $this->assertEquals([[2, 1], [1, 0]], $dominoes->getBoardPile()->toArray());
@@ -40,7 +40,7 @@ class BasicSimulatorStrategyTest extends TestCase
 
         $player1->getHandPile()->addTile(new Tile(6, 4));
 
-        $strategy = new BasicSimulatorStrategy(new Logger());
+        $strategy = new BasicSimulatorStrategy(new ArrayLog());
         $strategy->playerTurn($player1, $dominoes);
 
         $this->assertEquals([[6, 4], [4, 2]], $dominoes->getBoardPile()->toArray());
@@ -57,7 +57,7 @@ class BasicSimulatorStrategyTest extends TestCase
         $dominoes->getStockPile()->addTile(new Tile(1, 0));
         $player1->getHandPile()->addTile(new Tile(3, 2));
 
-        $strategy = new BasicSimulatorStrategy(new Logger());
+        $strategy = new BasicSimulatorStrategy(new ArrayLog());
         $strategy->playerTurn($player1, $dominoes);
 
         $this->assertEquals([[1, 1], [1, 0]], $dominoes->getBoardPile()->toArray());

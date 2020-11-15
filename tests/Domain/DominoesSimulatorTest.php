@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Dominoes\Domain;
 
+use Dominoes\Domain\BasicSimulatorStrategy;
 use Dominoes\Domain\Dominoes;
 use Dominoes\Domain\DominoesSimulator;
 use Dominoes\Domain\Player;
+use Dominoes\Infrastructure\ArrayLog;
 use PHPUnit\Framework\TestCase;
 
 class DominoesSimulatorTest extends TestCase
@@ -18,13 +20,15 @@ class DominoesSimulatorTest extends TestCase
         $dominoes = new Dominoes([$player1, $player2]);
         $dominoes->setupGame();
 
-        $simulator = new DominoesSimulator($dominoes);
+        $log = new ArrayLog();
+
+        $simulator = new DominoesSimulator($dominoes, $log, new BasicSimulatorStrategy($log));
         $simulator->play();
 
         // there must be a winner
         $this->assertTrue($dominoes->isThereAWinner());
 
         // there must be simulator logs
-        $this->assertNotEmpty($simulator->getLogs());
+        $this->assertNotEmpty($log->getLogs());
     }
 }

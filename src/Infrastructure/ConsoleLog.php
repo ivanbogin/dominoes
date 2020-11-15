@@ -9,9 +9,9 @@ use function fwrite;
 use const PHP_EOL;
 use const STDOUT;
 
-class Console
+class ConsoleLog implements Log
 {
-    public function writeln(string $text): void
+    public function write(string $text): void
     {
         fwrite(STDOUT, $text . PHP_EOL);
     }

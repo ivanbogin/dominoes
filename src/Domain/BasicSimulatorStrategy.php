@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Dominoes\Domain;
 
+use Dominoes\Infrastructure\Log;
+
 use function sprintf;
 
 class BasicSimulatorStrategy implements SimulatorStrategy
 {
-    protected Logger $logger;
+    protected Log $log;
 
-    public function __construct(Logger $logger)
+    public function __construct(Log $log)
     {
-        $this->logger = $logger;
+        $this->log = $log;
     }
 
     public function playerTurn(Player $player, Dominoes $dominoes): void
@@ -50,7 +52,7 @@ class BasicSimulatorStrategy implements SimulatorStrategy
 
     protected function logMovement($playerName, $playerTile, $boardTile): void
     {
-        $this->logger->addLog(
+        $this->log->write(
             sprintf(
                 '%s plays %s to connect to tile %s on the board',
                 $playerName,
