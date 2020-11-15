@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Dominoes\Domain;
 
 use Countable;
+use RuntimeException;
 
+use function array_key_last;
 use function array_pop;
+use function array_splice;
+use function array_unshift;
 use function count;
 use function shuffle;
 
@@ -26,6 +30,11 @@ class Pile implements Countable
     public function addTile(Tile $tile): void
     {
         $this->tiles[] = $tile;
+    }
+
+    public function addLeftTile(Tile $tile): void
+    {
+        array_unshift($this->tiles, $tile);
     }
 
     public function takeTile(): Tile
@@ -82,5 +91,28 @@ class Pile implements Countable
     public function getRightTile(): Tile
     {
         return $this->tiles[array_key_last($this->tiles)];
+    }
+
+    public function getLeftSide(): int
+    {
+        return $this->getLeftTile()->getLeftSide();
+    }
+
+    public function getRightSide(): int
+    {
+        return $this->getRightTile()->getRightSide();
+    }
+
+    public function removeTile(Tile $tile): void
+    {
+        foreach ($this->tiles as $key => $pileTile) {
+            if ($pileTile === $tile) {
+                array_splice($this->tiles, $key, 1);
+
+                return;
+            }
+        }
+
+        throw new RuntimeException('Tile not found in the pile');
     }
 }
