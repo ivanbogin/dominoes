@@ -73,4 +73,14 @@ class Pile implements Countable
 
         return $array;
     }
+
+    public function getLeftTile(): Tile
+    {
+        return $this->tiles[0];
+    }
+
+    public function getRightTile(): Tile
+    {
+        return $this->tiles[array_key_last($this->tiles)];
+    }
 }
