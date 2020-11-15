@@ -6,4 +6,10 @@ namespace Dominoes\Domain;
 
 class Dominoes
 {
+    /**
+     * @return Tile[]
+     */
+    public function generateTiles(): array
+    {
+    }
 }
