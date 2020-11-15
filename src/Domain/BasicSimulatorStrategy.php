@@ -19,6 +19,7 @@ class BasicSimulatorStrategy implements SimulatorStrategy
     {
         $playerPile     = $player->getHandPile();
         $boardPile      = $dominoes->getBoardPile();
+        $stockPile      = $dominoes->getStockPile();
         $boardLeftSide  = $boardPile->getLeftSide();
         $boardRightSide = $boardPile->getRightSide();
 
@@ -41,7 +42,10 @@ class BasicSimulatorStrategy implements SimulatorStrategy
                 return;
             }
         }
+
         // nothing found, get from stock and try again
+        $playerPile->addTile($stockPile->takeTile());
+        $this->playerTurn($player, $dominoes);
     }
 
     protected function logMovement($playerName, $playerTile, $boardTile): void
