@@ -46,7 +46,7 @@ class Pile implements Countable
             throw new RuntimeException('Tiles can not be connected');
         }
 
-        if ($existingTile !== $this->getLeftTile() || $existingTile !== $this->getRightTile()) {
+        if ($existingTile !== $this->getLeftTile() && $existingTile !== $this->getRightTile()) {
             throw new RuntimeException('Tiles can not be connected');
         }
 

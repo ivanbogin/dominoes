@@ -72,4 +72,19 @@ class PileTest extends TestCase
         $this->expectExceptionMessage('Tiles can not be connected');
         $pile->connectTile($tile3, $tile1);
     }
+
+    public function testConnectTileSuccess()
+    {
+        $pile  = new Pile();
+        $tile1 = new Tile(2, 1);
+        $tile2 = new Tile(6, 1);
+        $pile->addTile($tile1);
+
+        $pile->connectTile($tile2, $tile1);
+        $this->assertEquals([[2, 1], [1, 6]], $pile->toArray());
+
+        $tile3 = new Tile(2, 4);
+        $pile->connectTile($tile3, $tile1);
+        $this->assertEquals([[4, 2], [2, 1], [1, 6]], $pile->toArray());
+    }
 }
