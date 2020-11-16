@@ -23,57 +23,78 @@ class BasicSimulatorStrategy implements SimulatorStrategy
         $this->log = $log;
     }
 
+    /**
+     * Simulates basic player logic based on the game rules.
+     */
     public function playerTurn(Player $player, Dominoes $dominoes): void
     {
-        $playerPile     = $player->getHandPile();
-        $boardPile      = $dominoes->getBoardPile();
-        $stockPile      = $dominoes->getStockPile();
-        $boardLeftSide  = $boardPile->getLeftSide();
-        $boardRightSide = $boardPile->getRightSide();
-        $boardLeftTile  = $boardPile->getLeftTile();
-        $boardRightTile = $boardPile->getRightTile();
+        $move = $this->findPossibleMove($player, $dominoes);
 
-        foreach ($playerPile->getTiles() as $tile) {
-            // board left side
-            if (in_array($boardRightSide, [$tile->getLeftSide(), $tile->getRightSide()])) {
-                if ($boardRightSide !== $tile->getLeftSide()) {
-                    $tile->rotate();
-                }
-
-                $playerPile->removeTile($tile);
-                $boardPile->addTile($tile);
-                $this->logMovement($player->getName(), $tile, $boardRightTile);
-
-                return;
-            }
-
-            // board right side
-            if (! in_array($boardLeftSide, [$tile->getLeftSide(), $tile->getRightSide()])) {
-                continue;
-            }
-
-            if ($boardLeftSide !== $tile->getRightSide()) {
-                $tile->rotate();
-            }
-
-            $playerPile->removeTile($tile);
-            $boardPile->addLeftTile($tile);
-            $this->logMovement($player->getName(), $tile, $boardLeftTile);
+        if ($move) {
+            $player->getHandPile()->removeTile($move[0]);
+            $dominoes->getBoardPile()->connectTile($move[0], $move[1]);
+            $this->logMovement($player->getName(), $move[0], $move[1]);
+            $this->logBoard($dominoes->getBoardPile());
 
             return;
         }
 
         // if there are no tiles left in the stock, the player passes his turn
-        if ($stockPile->count() === 0) {
-            throw new EmptyStockException('Empty stock');
+        if ($dominoes->getStockPile()->count() === 0) {
+            return;
         }
 
         // get from stock and try again
-        $stockTile = $stockPile->takeTile();
-        $playerPile->addTile($stockTile);
+        $stockTile = $dominoes->getStockPile()->takeTile();
+        $player->getHandPile()->addTile($stockTile);
         $this->logTakingStock($player->getName(), $stockTile);
 
         $this->playerTurn($player, $dominoes);
+    }
+
+    /**
+     * This strategy can be played until all players can move and stock is not empty.
+     */
+    public function canPlay(Dominoes $dominoes): bool
+    {
+        // player with empty hand is a winner
+        foreach ($dominoes->getPlayers() as $player) {
+            if ($player->getHandPile()->count() === 0) {
+                return false;
+            }
+        }
+
+        // find if someone can play
+        foreach ($dominoes->getPlayers() as $player) {
+            if ($this->findPossibleMove($player, $dominoes) !== null) {
+                return true;
+            }
+        }
+
+        return $dominoes->getStockPile()->count() > 0;
+    }
+
+    /**
+     * Returns possible player movement according to the game rules (very basic).
+     *
+     * @return array<Tile,Tile>|null
+     */
+    protected function findPossibleMove(Player $player, Dominoes $dominoes): ?array
+    {
+        $boardPile = $dominoes->getBoardPile();
+
+        // go through player tiles and see if he has tile matching left or right side of the game board
+        foreach ($player->getHandPile()->getTiles() as $tile) {
+            if (in_array($boardPile->getLeftSide(), $tile->toArray())) {
+                return [$tile, $boardPile->getLeftTile()];
+            }
+
+            if (in_array($boardPile->getRightSide(), $tile->toArray())) {
+                return [$tile, $boardPile->getRightTile()];
+            }
+        }
+
+        return null;
     }
 
     protected function logMovement(string $playerName, Tile $playerTile, Tile $boardTile): void
@@ -86,6 +107,11 @@ class BasicSimulatorStrategy implements SimulatorStrategy
                 $boardTile
             )
         );
+    }
+
+    protected function logBoard(Pile $pile): void
+    {
+        $this->log->write(sprintf('Board is now: %s', implode(' ', $pile->toStringArray())));
     }
 
     protected function logTakingStock(string $playerName, Tile $newTile): void

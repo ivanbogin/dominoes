@@ -6,5 +6,7 @@ namespace Dominoes\Domain;
 
 interface SimulatorStrategy
 {
+    public function canPlay(Dominoes $dominoes): bool;
+
     public function playerTurn(Player $player, Dominoes $dominoes): void;
 }

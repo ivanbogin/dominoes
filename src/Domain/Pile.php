@@ -7,11 +7,13 @@ namespace Dominoes\Domain;
 use Countable;
 use RuntimeException;
 
+use function array_intersect;
 use function array_key_last;
 use function array_pop;
 use function array_splice;
 use function array_unshift;
 use function count;
+use function in_array;
 use function shuffle;
 
 /**
@@ -52,19 +54,23 @@ class Pile implements Countable
 
         // try to connect to the left side
         if (in_array($this->getLeftSide(), $newTile->toArray())) {
-            if ($this->getLeftSide() != $newTile->getRightSide()) {
+            if ($this->getLeftSide() !== $newTile->getRightSide()) {
                 $newTile->rotate();
             }
+
             $this->addLeftTile($newTile);
+
             return;
         }
 
         // try to connect to the right side
         if (in_array($this->getRightSide(), $newTile->toArray())) {
-            if ($this->getRightSide() != $newTile->getLeftSide()) {
+            if ($this->getRightSide() !== $newTile->getLeftSide()) {
                 $newTile->rotate();
             }
+
             $this->addTile($newTile);
+
             return;
         }
 

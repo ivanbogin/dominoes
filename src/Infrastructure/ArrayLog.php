@@ -6,6 +6,7 @@ namespace Dominoes\Infrastructure;
 
 class ArrayLog implements Log
 {
+    /** @var array<string> */
     private array $logs = [];
 
     public function write(string $text): void
@@ -14,7 +15,7 @@ class ArrayLog implements Log
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getLogs(): array
     {

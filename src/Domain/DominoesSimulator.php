@@ -6,7 +6,6 @@ namespace Dominoes\Domain;
 
 use Dominoes\Infrastructure\Log;
 
-use function implode;
 use function sprintf;
 
 /**
@@ -33,33 +32,24 @@ class DominoesSimulator
         $firstTile = $dominoes->getBoardPile()->getTiles()[0];
         $this->log->write('Game starting with first tile: ' . $firstTile);
 
-        while ($dominoes->isThereAWinner() === false) {
+        while ($this->simulatorStrategy->canPlay($dominoes)) {
             foreach ($dominoes->getPlayers() as $player) {
-                try {
-                    $this->simulatorStrategy->playerTurn($player, $dominoes);
-                } catch (EmptyStockException $emptyStockException) {
-                    $this->log->write(sprintf('Stock is empty! Draw'));
-
-                    return;
-                }
-
-                $this->logBoard($dominoes->getBoardPile());
-                if ($dominoes->isThereAWinner()) {
+                $this->simulatorStrategy->playerTurn($player, $dominoes);
+                if ($this->simulatorStrategy->canPlay($dominoes) === false) {
                     break;
                 }
             }
         }
 
-        $this->log->write(sprintf('Player %s has won!', $dominoes->findWinner()->getName()));
+        if ($dominoes->isThereAWinner()) {
+            $this->log->write(sprintf('Player %s has won!', $dominoes->findWinner()->getName()));
+        } elseif ($dominoes->getStockPile()->count() === 0) {
+            $this->log->write(sprintf('Stock is empty! Draw'));
+        }
     }
 
     protected function getDominoes(): Dominoes
     {
         return $this->dominoes;
-    }
-
-    protected function logBoard(Pile $pile): void
-    {
-        $this->log->write(sprintf('Board is now: %s', implode(' ', $pile->toStringArray())));
     }
 }
