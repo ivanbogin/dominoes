@@ -6,10 +6,10 @@ PHP implementation of classic double six dominoes game developed using test-driv
 * Composer
 
 ## Implementation Approach
-Game is non-interactive (yet) and just simulates 2 players playing double six dominoes game with a simplified rules:
-* Until one player hand is empty - then he wins
-* Or until stock is empty - then it's a draw and no one wins
-
+* Game is non-interactive (yet):
+    * Simulate 2 players playing double six dominoes game with a simplified rules
+    * Play until one player hand is empty - then he wins
+    * Play until stock is empty - then it's a draw and no one wins
 * Identify entities for dominoes game
     * `Dominoes` game set
     * `Tile` single tile for dominoes game
