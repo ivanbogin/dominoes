@@ -6,6 +6,8 @@ namespace Dominoes\Domain;
 
 use Dominoes\Infrastructure\Log;
 
+use function implode;
+use function in_array;
 use function sprintf;
 
 class BasicSimulatorStrategy implements SimulatorStrategy
@@ -19,8 +21,6 @@ class BasicSimulatorStrategy implements SimulatorStrategy
 
     public function playerTurn(Player $player, Dominoes $dominoes): void
     {
-        $this->logPlayerHand($player);
-
         $playerPile     = $player->getHandPile();
         $boardPile      = $dominoes->getBoardPile();
         $stockPile      = $dominoes->getStockPile();
@@ -35,6 +35,7 @@ class BasicSimulatorStrategy implements SimulatorStrategy
                 if ($boardRightSide !== $tile->getLeftSide()) {
                     $tile->rotate();
                 }
+
                 $playerPile->removeTile($tile);
                 $boardPile->addTile($tile);
                 $this->logMovement($player->getName(), $tile, $boardRightTile);
@@ -43,19 +44,27 @@ class BasicSimulatorStrategy implements SimulatorStrategy
             }
 
             // board right side
-            if (in_array($boardLeftSide, [$tile->getLeftSide(), $tile->getRightSide()])) {
-                if ($boardLeftSide !== $tile->getRightSide()) {
-                    $tile->rotate();
-                }
-                $playerPile->removeTile($tile);
-                $boardPile->addLeftTile($tile);
-                $this->logMovement($player->getName(), $tile, $boardLeftTile);
-
-                return;
+            if (! in_array($boardLeftSide, [$tile->getLeftSide(), $tile->getRightSide()])) {
+                continue;
             }
+
+            if ($boardLeftSide !== $tile->getRightSide()) {
+                $tile->rotate();
+            }
+
+            $playerPile->removeTile($tile);
+            $boardPile->addLeftTile($tile);
+            $this->logMovement($player->getName(), $tile, $boardLeftTile);
+
+            return;
         }
 
-        // nothing found, get from stock and try again
+        // if there are no tiles left in the stock, the player passes his turn
+        if ($stockPile->count() === 0) {
+            throw new EmptyStockException('Empty stock');
+        }
+
+        // get from stock and try again
         $stockTile = $stockPile->takeTile();
         $playerPile->addTile($stockTile);
         $this->logTakingStock($player->getName(), $stockTile);
@@ -80,7 +89,7 @@ class BasicSimulatorStrategy implements SimulatorStrategy
         $this->log->write(sprintf("%s can't play, drawing tile %s", $playerName, $newTile));
     }
 
-    protected function logPlayerHand(Player $player)
+    protected function logPlayerHand(Player $player): void
     {
         $this->log->write(
             sprintf('%s hand: %s', $player->getName(), implode(' ', $player->getHandPile()->toStringArray()))

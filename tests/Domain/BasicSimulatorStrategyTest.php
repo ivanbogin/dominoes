@@ -47,7 +47,7 @@ class BasicSimulatorStrategyTest extends TestCase
         $this->assertEmpty($player1->getHandPile()->getTiles());
     }
 
-    public function testPlayerTurnNoTile(): void
+    public function testPlayerTurnTakeTileFromStock(): void
     {
         $player1  = new Player('Alice');
         $player2  = new Player('Bob');
@@ -64,7 +64,7 @@ class BasicSimulatorStrategyTest extends TestCase
         $this->assertEquals([[3, 2]], $player1->getHandPile()->toArray());
     }
 
-    public function testPlayerTurnRotate(): void
+    public function testPlayerTurnRotateToMatch(): void
     {
         $player1  = new Player('Alice');
         $player2  = new Player('Bob');

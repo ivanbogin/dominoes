@@ -6,6 +6,9 @@ namespace Dominoes\Domain;
 
 use Dominoes\Infrastructure\Log;
 
+use function implode;
+use function sprintf;
+
 class DominoesSimulator
 {
     protected Dominoes $dominoes;
@@ -29,7 +32,14 @@ class DominoesSimulator
 
         while ($dominoes->isThereAWinner() === false) {
             foreach ($dominoes->getPlayers() as $player) {
-                $this->simulatorStrategy->playerTurn($player, $dominoes);
+                try {
+                    $this->simulatorStrategy->playerTurn($player, $dominoes);
+                } catch (EmptyStockException $emptyStockException) {
+                    $this->log->write(sprintf('Stock is empty! Draw'));
+
+                    return;
+                }
+
                 $this->logBoard($dominoes->getBoardPile());
                 if ($dominoes->isThereAWinner()) {
                     break;
@@ -45,7 +55,7 @@ class DominoesSimulator
         return $this->dominoes;
     }
 
-    protected function logBoard(Pile $pile)
+    protected function logBoard(Pile $pile): void
     {
         $this->log->write(sprintf('Board is now: %s', implode(' ', $pile->toStringArray())));
     }
