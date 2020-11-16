@@ -63,4 +63,30 @@ class DominoesSimulatorTest extends TestCase
 
         $this->assertTrue($dominoes->isThereAWinner());
     }
+
+    public function testPlayDraw(): void
+    {
+        $player1  = new Player('Alice');
+        $player2  = new Player('Bob');
+        $dominoes = new Dominoes([$player1, $player2]);
+
+        $dominoes->getBoardPile()->addTile(new Tile(3, 3));
+
+        // player 1 is going first, but no matching tile
+        $player1->getHandPile()->addTile(new Tile(1, 1));
+
+        // player 2 also has no matching tile
+        $player2->getHandPile()->addTile(new Tile(2, 1));
+
+        $log = new ArrayLog();
+
+        $simulator = new DominoesSimulator($dominoes, $log, new BasicSimulatorStrategy($log));
+        $simulator->play();
+
+        // board contains initial tile [3, 3]
+        $this->assertEquals([[3, 3]], $dominoes->getBoardPile()->toArray());
+
+        $this->assertFalse($dominoes->isThereAWinner());
+        $this->assertCount(0, $dominoes->getStockPile());
+    }
 }

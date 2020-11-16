@@ -118,11 +118,4 @@ class BasicSimulatorStrategy implements SimulatorStrategy
     {
         $this->log->write(sprintf("%s can't play, drawing tile %s", $playerName, $newTile));
     }
-
-    protected function logPlayerHand(Player $player): void
-    {
-        $this->log->write(
-            sprintf('%s hand: %s', $player->getName(), implode(' ', $player->getHandPile()->toStringArray()))
-        );
-    }
 }

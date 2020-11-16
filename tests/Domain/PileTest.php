@@ -88,4 +88,16 @@ class PileTest extends TestCase
         $pile->connectTile($tile3, $tile1);
         $this->assertEquals([[4, 2], [2, 1], [1, 6]], $pile->toArray());
     }
+
+    public function testRemoveTileNotFoundInPile(): void
+    {
+        $pile  = new Pile();
+        $tile1 = new Tile(2, 1);
+        $tile2 = new Tile(6, 1);
+        $pile->addTile($tile1);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Tile not found in the pile');
+        $pile->removeTile($tile2);
+    }
 }

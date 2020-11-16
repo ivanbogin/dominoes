@@ -8,6 +8,7 @@ use Dominoes\Domain\Dominoes;
 use Dominoes\Domain\Player;
 use Dominoes\Domain\Tile;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 use function array_map;
 use function array_merge;
@@ -110,5 +111,12 @@ class DominoesTest extends TestCase
         $dominoes = new Dominoes([$player1, $player2]);
 
         $this->assertTrue($dominoes->isThereAWinner());
+    }
+
+    public function testWrongNumberOfPlayers(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Wrong number of players (min 2, max 4)');
+        new Dominoes([]);
     }
 }
