@@ -26,7 +26,7 @@ class DominoesSimulatorTest extends TestCase
         $simulator->play();
 
         // there must be a winner or an empty stock
-        $this->assertTrue($dominoes->isThereAWinner() || $dominoes->getStockPile()->count() == 0);
+        $this->assertTrue($dominoes->isThereAWinner() || $dominoes->getStockPile()->count() === 0);
 
         // there must be simulator logs
         $this->assertNotEmpty($log->getLogs());
