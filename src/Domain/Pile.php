@@ -40,6 +40,37 @@ class Pile implements Countable
         array_unshift($this->tiles, $tile);
     }
 
+    public function connectTile(Tile $newTile, Tile $existingTile): void
+    {
+        if (! array_intersect($newTile->toArray(), $existingTile->toArray())) {
+            throw new RuntimeException('Tiles can not be connected');
+        }
+
+        if ($existingTile !== $this->getLeftTile() || $existingTile !== $this->getRightTile()) {
+            throw new RuntimeException('Tiles can not be connected');
+        }
+
+        // try to connect to the left side
+        if (in_array($this->getLeftSide(), $newTile->toArray())) {
+            if ($this->getLeftSide() != $newTile->getRightSide()) {
+                $newTile->rotate();
+            }
+            $this->addLeftTile($newTile);
+            return;
+        }
+
+        // try to connect to the right side
+        if (in_array($this->getRightSide(), $newTile->toArray())) {
+            if ($this->getRightSide() != $newTile->getLeftSide()) {
+                $newTile->rotate();
+            }
+            $this->addTile($newTile);
+            return;
+        }
+
+        throw new RuntimeException('Tiles can not be connected');
+    }
+
     public function takeTile(): Tile
     {
         return array_pop($this->tiles);

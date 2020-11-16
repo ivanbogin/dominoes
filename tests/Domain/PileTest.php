@@ -45,4 +45,31 @@ class PileTest extends TestCase
 
         $this->assertEquals($pile->toArray(), [[0, 1], [4, 5]]);
     }
+
+    public function testConnectTileMismatch()
+    {
+        $pile  = new Pile();
+        $tile1 = new Tile(2, 1);
+        $tile2 = new Tile(3, 3);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Tiles can not be connected');
+        $pile->connectTile($tile1, $tile2);
+    }
+
+    public function testConnectTileWrongConnection()
+    {
+        $pile  = new Pile();
+        $tile1 = new Tile(2, 1);
+        $tile2 = new Tile(6, 1);
+        $pile->addTile($tile1);
+        $pile->connectTile($tile2, $tile1);
+        $this->assertEquals([[2, 1], [1, 6]], $pile->toArray());
+
+        $tile3 = new Tile(1, 1);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Tiles can not be connected');
+        $pile->connectTile($tile3, $tile1);
+    }
 }
