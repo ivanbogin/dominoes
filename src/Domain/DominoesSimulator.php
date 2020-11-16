@@ -9,6 +9,9 @@ use Dominoes\Infrastructure\Log;
 use function implode;
 use function sprintf;
 
+/**
+ * Dominoes play simulator using specified strategy.
+ */
 class DominoesSimulator
 {
     protected Dominoes $dominoes;

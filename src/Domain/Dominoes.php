@@ -9,6 +9,10 @@ use RuntimeException;
 use function count;
 use function shuffle;
 
+/**
+ * Classic double six dominoes game.
+ * Sets up a game according to the rules.
+ */
 class Dominoes
 {
     public const SET_SIZE = 6;

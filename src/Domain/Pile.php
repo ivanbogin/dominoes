@@ -14,6 +14,9 @@ use function array_unshift;
 use function count;
 use function shuffle;
 
+/**
+ * Basic entity representing group of tiles.
+ */
 class Pile implements Countable
 {
     /** @var Tile[] */

@@ -10,6 +10,10 @@ use function implode;
 use function in_array;
 use function sprintf;
 
+/**
+ * Simulates actual gameplay according to the rules.
+ * Logs actions to log.
+ */
 class BasicSimulatorStrategy implements SimulatorStrategy
 {
     protected Log $log;
