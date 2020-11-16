@@ -19,38 +19,51 @@ class BasicSimulatorStrategy implements SimulatorStrategy
 
     public function playerTurn(Player $player, Dominoes $dominoes): void
     {
+        $this->logPlayerHand($player);
+
         $playerPile     = $player->getHandPile();
         $boardPile      = $dominoes->getBoardPile();
         $stockPile      = $dominoes->getStockPile();
         $boardLeftSide  = $boardPile->getLeftSide();
         $boardRightSide = $boardPile->getRightSide();
+        $boardLeftTile  = $boardPile->getLeftTile();
+        $boardRightTile = $boardPile->getRightTile();
 
         foreach ($playerPile->getTiles() as $tile) {
-            // board right side
-            if ($tile->getRightSide() === $boardLeftSide) {
+            // board left side
+            if (in_array($boardRightSide, [$tile->getLeftSide(), $tile->getRightSide()])) {
+                if ($boardRightSide !== $tile->getLeftSide()) {
+                    $tile->rotate();
+                }
                 $playerPile->removeTile($tile);
-                $boardPile->addLeftTile($tile);
-                $this->logMovement($player->getName(), $tile, $dominoes->getBoardPile()->getLeftTile());
+                $boardPile->addTile($tile);
+                $this->logMovement($player->getName(), $tile, $boardRightTile);
 
                 return;
             }
 
-            // board left side
-            if ($tile->getLeftSide() === $boardRightSide) {
+            // board right side
+            if (in_array($boardLeftSide, [$tile->getLeftSide(), $tile->getRightSide()])) {
+                if ($boardLeftSide !== $tile->getRightSide()) {
+                    $tile->rotate();
+                }
                 $playerPile->removeTile($tile);
-                $boardPile->addTile($tile);
-                $this->logMovement($player->getName(), $tile, $dominoes->getBoardPile()->getRightTile());
+                $boardPile->addLeftTile($tile);
+                $this->logMovement($player->getName(), $tile, $boardLeftTile);
 
                 return;
             }
         }
 
         // nothing found, get from stock and try again
-        $playerPile->addTile($stockPile->takeTile());
+        $stockTile = $stockPile->takeTile();
+        $playerPile->addTile($stockTile);
+        $this->logTakingStock($player->getName(), $stockTile);
+
         $this->playerTurn($player, $dominoes);
     }
 
-    protected function logMovement($playerName, $playerTile, $boardTile): void
+    protected function logMovement(string $playerName, Tile $playerTile, Tile $boardTile): void
     {
         $this->log->write(
             sprintf(
@@ -59,6 +72,18 @@ class BasicSimulatorStrategy implements SimulatorStrategy
                 $playerTile,
                 $boardTile
             )
+        );
+    }
+
+    protected function logTakingStock(string $playerName, Tile $newTile): void
+    {
+        $this->log->write(sprintf("%s can't play, drawing tile %s", $playerName, $newTile));
+    }
+
+    protected function logPlayerHand(Player $player)
+    {
+        $this->log->write(
+            sprintf('%s hand: %s', $player->getName(), implode(' ', $player->getHandPile()->toStringArray()))
         );
     }
 }

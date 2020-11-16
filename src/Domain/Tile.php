@@ -37,4 +37,11 @@ class Tile
     {
         return '<' . $this->leftSide . ':' . $this->rightSide . '>';
     }
+
+    public function rotate(): void
+    {
+        $leftSideValue   = $this->leftSide;
+        $this->leftSide  = $this->rightSide;
+        $this->rightSide = $leftSideValue;
+    }
 }

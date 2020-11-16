@@ -30,12 +30,23 @@ class DominoesSimulator
         while ($dominoes->isThereAWinner() === false) {
             foreach ($dominoes->getPlayers() as $player) {
                 $this->simulatorStrategy->playerTurn($player, $dominoes);
+                $this->logBoard($dominoes->getBoardPile());
+                if ($dominoes->isThereAWinner()) {
+                    break;
+                }
             }
         }
+
+        $this->log->write(sprintf('Player %s has won!', $dominoes->findWinner()->getName()));
     }
 
     protected function getDominoes(): Dominoes
     {
         return $this->dominoes;
+    }
+
+    protected function logBoard(Pile $pile)
+    {
+        $this->log->write(sprintf('Board is now: %s', implode(' ', $pile->toStringArray())));
     }
 }

@@ -81,13 +81,18 @@ class Dominoes
      */
     public function isThereAWinner(): bool
     {
+        return $this->findWinner() !== null;
+    }
+
+    public function findWinner(): ?Player
+    {
         foreach ($this->getPlayers() as $player) {
             if ($player->getHandPile()->count() === 0) {
-                return true;
+                return $player;
             }
         }
 
-        return false;
+        return null;
     }
 
     /**

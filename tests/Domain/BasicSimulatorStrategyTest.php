@@ -63,4 +63,21 @@ class BasicSimulatorStrategyTest extends TestCase
         $this->assertEquals([[1, 1], [1, 0]], $dominoes->getBoardPile()->toArray());
         $this->assertEquals([[3, 2]], $player1->getHandPile()->toArray());
     }
+
+    public function testPlayerTurnRotate(): void
+    {
+        $player1  = new Player('Alice');
+        $player2  = new Player('Bob');
+        $dominoes = new Dominoes([$player1, $player2]);
+
+        $dominoes->getBoardPile()->addTile(new Tile(4, 2));
+
+        $player1->getHandPile()->addTile(new Tile(0, 2));
+
+        $strategy = new BasicSimulatorStrategy(new ArrayLog());
+        $strategy->playerTurn($player1, $dominoes);
+
+        $this->assertEquals([[4, 2], [2, 0]], $dominoes->getBoardPile()->toArray());
+        $this->assertEmpty($player1->getHandPile()->getTiles());
+    }
 }
