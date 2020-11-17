@@ -43,11 +43,8 @@ class Pile implements Countable
 
     public function connectTile(Tile $newTile, Tile $existingTile): void
     {
-        if (! array_intersect($newTile->toArray(), $existingTile->toArray())) {
-            throw new DominoesException('Tiles can not be connected');
-        }
-
-        if ($existingTile !== $this->getLeftTile() && $existingTile !== $this->getRightTile()) {
+        // check if tiles can be connected
+        if ($this->tilesCanBeConnected($newTile, $existingTile) === false) {
             throw new DominoesException('Tiles can not be connected');
         }
 
@@ -122,24 +119,24 @@ class Pile implements Countable
         return $array;
     }
 
-    public function getLeftTile(): Tile
+    public function getLeftTile(): ?Tile
     {
-        return $this->tiles[0];
+        return $this->tiles[0] ?? null;
     }
 
-    public function getRightTile(): Tile
+    public function getRightTile(): ?Tile
     {
-        return $this->tiles[array_key_last($this->tiles)];
+        return isset($this->tiles[0]) ? $this->tiles[array_key_last($this->tiles)] : null;
     }
 
-    public function getLeftSide(): int
+    public function getLeftSide(): ?int
     {
-        return $this->getLeftTile()->getLeftSide();
+        return $this->getLeftTile() ? $this->getLeftTile()->getLeftSide() : null;
     }
 
-    public function getRightSide(): int
+    public function getRightSide(): ?int
     {
-        return $this->getRightTile()->getRightSide();
+        return $this->getRightTile() ? $this->getRightTile()->getRightSide() : null;
     }
 
     public function removeTile(Tile $tile): void
@@ -153,5 +150,20 @@ class Pile implements Countable
         }
 
         throw new DominoesException('Tile not found in the pile');
+    }
+
+    protected function tilesCanBeConnected(Tile $newTile, Tile $existingTile): bool
+    {
+        // existing tile must be on the left or right side
+        if ($existingTile !== $this->getLeftTile() && $existingTile !== $this->getRightTile()) {
+            return false;
+        }
+
+        // tiles must have common pins
+        if (! array_intersect($newTile->toArray(), $existingTile->toArray())) {
+            return false;
+        }
+
+        return true;
     }
 }
