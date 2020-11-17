@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Dominoes\Domain;
 
+use Dominoes\Domain\DominoesException;
 use Dominoes\Domain\Pile;
 use Dominoes\Domain\Tile;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 class PileTest extends TestCase
 {
@@ -53,7 +53,7 @@ class PileTest extends TestCase
         $tile1 = new Tile(2, 1);
         $tile2 = new Tile(3, 3);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(DominoesException::class);
         $this->expectExceptionMessage('Tiles can not be connected');
         $pile->connectTile($tile1, $tile2);
     }
@@ -69,7 +69,7 @@ class PileTest extends TestCase
 
         $tile3 = new Tile(1, 1);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(DominoesException::class);
         $this->expectExceptionMessage('Tiles can not be connected');
         $pile->connectTile($tile3, $tile1);
     }
@@ -96,7 +96,7 @@ class PileTest extends TestCase
         $tile2 = new Tile(6, 1);
         $pile->addTile($tile1);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(DominoesException::class);
         $this->expectExceptionMessage('Tile not found in the pile');
         $pile->removeTile($tile2);
     }

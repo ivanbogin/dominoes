@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Dominoes\Domain;
 
 use Dominoes\Domain\Dominoes;
+use Dominoes\Domain\DominoesException;
 use Dominoes\Domain\Player;
 use Dominoes\Domain\Tile;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 use function array_map;
 use function array_merge;
@@ -115,7 +115,7 @@ class DominoesTest extends TestCase
 
     public function testWrongNumberOfPlayers(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(DominoesException::class);
         $this->expectExceptionMessage('Wrong number of players (min 2, max 4)');
         new Dominoes([]);
     }

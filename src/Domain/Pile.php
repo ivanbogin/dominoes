@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Dominoes\Domain;
 
 use Countable;
-use RuntimeException;
 
 use function array_intersect;
 use function array_key_last;
@@ -45,11 +44,11 @@ class Pile implements Countable
     public function connectTile(Tile $newTile, Tile $existingTile): void
     {
         if (! array_intersect($newTile->toArray(), $existingTile->toArray())) {
-            throw new RuntimeException('Tiles can not be connected');
+            throw new DominoesException('Tiles can not be connected');
         }
 
         if ($existingTile !== $this->getLeftTile() && $existingTile !== $this->getRightTile()) {
-            throw new RuntimeException('Tiles can not be connected');
+            throw new DominoesException('Tiles can not be connected');
         }
 
         // try to connect to the left side
@@ -74,7 +73,7 @@ class Pile implements Countable
             return;
         }
 
-        throw new RuntimeException('Tiles can not be connected');
+        throw new DominoesException('Tiles can not be connected');
     }
 
     public function takeTile(): Tile
@@ -153,6 +152,6 @@ class Pile implements Countable
             }
         }
 
-        throw new RuntimeException('Tile not found in the pile');
+        throw new DominoesException('Tile not found in the pile');
     }
 }

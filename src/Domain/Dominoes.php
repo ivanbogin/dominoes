@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Dominoes\Domain;
 
-use RuntimeException;
-
 use function count;
 use function shuffle;
 
@@ -30,7 +28,7 @@ class Dominoes
     public function __construct(array $players)
     {
         if (count($players) < 2 || count($players) > 4) {
-            throw new RuntimeException('Wrong number of players (min 2, max 4)');
+            throw new DominoesException('Wrong number of players (min 2, max 4)');
         }
 
         $this->players   = $players;
