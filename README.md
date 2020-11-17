@@ -2,8 +2,8 @@
 PHP implementation of classic double six dominoes game developed using test-driven approach.
 
 ## Requirements
-* PHP 7.4
-* Composer
+* PHP 7.4 with Composer to run with `composer play`
+* Alternatively Docker to run with `script/run`
 
 ## Implementation Approach
 * Game is non-interactive (yet):
@@ -27,7 +27,7 @@ PHP implementation of classic double six dominoes game developed using test-driv
 ## How To
 
 * Install dependencies with `composer install`
-* Run simulation with `composer play` or `php app.php`
+* Run simulation with `composer play` or `php app.php` or `script/run` (docker)
 * Run tests with `composer test`
 * Check test coverage with `composer coverage`
 
